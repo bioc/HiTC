@@ -12,7 +12,7 @@ import("IRanges")
 
 ##Package used in HiTC
 importFrom("RColorBrewer", "brewer.pal")
-importFrom("Matrix", "cBind", "rBind", "Matrix", "sparseMatrix", "t")
+importFrom("Matrix", "Matrix", "sparseMatrix", "t")
 importFrom("GenomeInfoDb", "seqlevels", "sortSeqlevels", "seqlengths")
 importFrom("parallel", "mclapply")
 importFrom("grDevices", "col2rgb", "colorRampPalette", "dev.off", "pdf", "pdf.options", "png")

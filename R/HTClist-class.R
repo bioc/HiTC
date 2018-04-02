@@ -10,7 +10,7 @@ setClass("HTClist",
 
 setValidity("HTClist",
             function(object){
-                fails <- character(0)                
+                fails <- character(0)
                 ## Check Chromosome Pairs Data
                  chrom <- sapply(object, function(x){
                      paste(seqlevels(x_intervals(x)), seqlevels(y_intervals(x)), sep="")
@@ -23,7 +23,7 @@ setValidity("HTClist",
                 ##if (length(unique(unlist(ranges(object)))) > length(seqlevels(object))){
                 ##    fails <- c(fails, "Same chromosome found with different ranges")
                 ##}
-                
+
                 if (length(fails) > 0) return(fails)
                 return(TRUE)
             })
@@ -33,7 +33,7 @@ HTClist <- function(...)
 {
   listData <- list(...)
   stopifnot(length(listData) > 0L)
-  
+
   if (length(listData) == 1L && is.list(listData[[1L]]))
       listData <- listData[[1L]]
   if (!all(sapply(listData, is, "HTCexp")))
@@ -43,7 +43,7 @@ HTClist <- function(...)
   names(listData) <- sapply(listData, function(x){
     paste(seqlevels(y_intervals(x)), seqlevels(x_intervals(x)), sep="")
   })
-  
+
   new("HTClist", listData)
 }
 
@@ -59,16 +59,16 @@ setMethod("[", "HTClist",
     {
         if (is.character(i)){
             i <- match( i, names(x))
-          }        
+          }
         HTClist(unlist(x)[i])
-    })          
+    })
 
 
 setMethod("as.list", "HTClist",
     function(x)
     {
         as.list(unlist(x))
-    })          
+    })
 
 
 setMethod("c", "HTClist", function(x, ...){
@@ -109,13 +109,13 @@ setMethod(f="forcePairwise", signature(x="HTClist"),
               isin <- rep(0, length(pchr))
               names(isin) <- names(pchr)
               isin[names(x)] <- 1
-              
+
               ptoadd <- pchr[names(which(isin==0))]
               nmaps <- mclapply(ptoadd, function(obj){
                 symobj <- x[[paste0(obj[2], obj[1])]]
                 HTCexp(intdata=t(intdata(symobj)), xgi=y_intervals(symobj), ygi=x_intervals(symobj))
               })
-              
+
               c(x, nmaps)
             }else{
               x
@@ -163,7 +163,7 @@ setMethod(f="getCombinedIntervals", signature(x="HTClist"),
               x <- x[isIntraChrom(x)]
               ygr <- lapply(x, y_intervals)
               ygi <- suppressWarnings(do.call(c,unname(ygr)))
-              
+
               if(length(which(!sapply(x, isSymmetric)))>0){
                 xgr <- lapply(x, x_intervals)
                 xgi <- suppressWarnings(do.call(c,unname(xgr)))
@@ -192,7 +192,7 @@ setMethod(f="getCombinedIntervals", signature(x="HTClist"),
 
 setMethod(f="getCombinedContacts", signature(x="HTClist"),
           function(x){
-              
+
             message("Start combining HTCexp objects ...")
             pchr <- t(as.data.frame(pair.chrom(seqlevels(x))))
             gr <- getCombinedIntervals(x, merge=TRUE)
@@ -201,8 +201,8 @@ setMethod(f="getCombinedContacts", signature(x="HTClist"),
 
             col.merged <- lapply(seqlevels(x), function(chr){
               allpairs <- pchr[which(pchr[,1]==chr),]
-              ##do.call(cBind,lapply(x[allpairs], function(xx){as(intdata(xx), "sparseMatrix")}})         
-              do.call(cBind, apply(allpairs, 1, function(chrs){
+              ##do.call(cbind,lapply(x[allpairs], function(xx){as(intdata(xx), "sparseMatrix")}})
+              do.call(cbind, apply(allpairs, 1, function(chrs){
                 mapname <- paste0(chrs, collapse="")
                 if (is.element(mapname, names(x))){
                     as(intdata(x[[mapname]]), "sparseMatrix")
@@ -211,8 +211,8 @@ setMethod(f="getCombinedContacts", signature(x="HTClist"),
                 }
               }))
             })
-                        
-            bigMat <- do.call(rBind, col.merged)
+
+            bigMat <- do.call(rbind, col.merged)
             colnames(bigMat) <- rownames(bigMat) <- names(gr)
             message("Object size: ",object.size(bigMat))
             bigMat
@@ -231,7 +231,7 @@ setMethod(f="isComplete", signature(x="HTClist"),
                 mat.pairs <- matrix(0, ncol=lchrs, nrow=lchrs, dimnames=list(chrs, chrs))
                 for (m in x){
                   mat.pairs[seqlevels(m@ygi), seqlevels(m@xgi)] <- 1
-                }         
+                }
                 maps_per_chr <- apply(mat.pairs, 1, sum) + apply(mat.pairs, 2, sum)
                 if (any(maps_per_chr<(length(seqlevels(x))+1)))
                   ret <- FALSE
@@ -248,13 +248,13 @@ setMethod(f="isBinned", signature(x="HTClist"),
 
 setMethod(f="isIntraChrom", signature(x="HTClist"),
           function(x){
-              sapply(x, isIntraChrom) 
+              sapply(x, isIntraChrom)
           })
 
 
 setMethod(f="ranges", signature(x="HTClist"),
           function(x){
-              GRangesList(sapply(x, range)) 
+              GRangesList(sapply(x, range))
           })
 
 
@@ -316,4 +316,3 @@ setMethod("summary", signature=c(object="HTClist"),
                rownames(sy) <- paste0(sy$seq1, sy$seq2)
                sy
            })
-
