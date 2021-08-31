@@ -134,7 +134,7 @@ By default, objects from the \Rclass{HTClist} class will be represented as an he
 <<plot1, fig=TRUE, width=5, height=5>>=
 ## Go back to a smaller dataset (chr21, 22, X) at lower resolution
 sset <- reduce(hic_imr90_40, chr=c("chr5","chr6","chr7"))
-imr90_500 <- HTClist(mclapply(sset, binningC, 
+imr90_500 <- HTClist(lapply(sset, binningC, 
                           binsize=500000, bin.adjust=FALSE, method="sum", step=1))
 mapC(imr90_500)
 @ 
@@ -166,7 +166,7 @@ resFrag
 As any sequencing application, the Hi-C library preparation contains bias, which can be broadly classified as ligation bias and sequence content bias. These effects were first described by \cite{Yaffe2011} and require appropriate normalization methods.\\
 \cite{Hu2012} recently proposed a linear model strategy to normalize the data. Their method (named HiCNorm) requires that the bias was infered from the restriction fragments and then used at the Hi-C resolution. 
 The \Rfunction{getAnnotatedRestrictionSites} function aims at annotating the restriction fragments according to their mappability (optional), GC content and effective length features. The local genomic features can be then assign to each genomic region, and normalized using the \cite{Hu2012} method.\\
-In the following example, we will focus on chromosome 6 only. The same code can be easily applied on a \Rclass{HTClist} object using the \Rfunction{mclapply} function.
+In the following example, we will focus on chromosome 6 only. The same code can be easily applied on a \Rclass{HTClist} object using the \Rfunction{lapply} function.
 In the same way, we will not use here the mappability information for space issue. In practice, the mappability track can be downloaded from the ENCODE project data, and is important to normalize the Hi-C data.
 
 <<annot>>=
