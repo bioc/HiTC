@@ -116,17 +116,18 @@ getExpectedCountsMean <- function(x, logbin=TRUE, step=1.05, filter.low=0.05){
   message("Estimate expected using mean contact frequency per genomic distance ...")
   
   xdata <- as.matrix(xdata)
-  rc <- colSums(xdata, na.rm=TRUE)
-  ##rc <- which(rc==0)
-  rc <- which(rc < ceiling(quantile(rc[which(rc>0)], probs=filter.low)))
-  rr <- rowSums(xdata, na.rm=TRUE)
-  ##rr <- which(rr==0)
-  rr <- which(rr <  ceiling(quantile(rr[which(rr>0)], probs=filter.low)))
-
-  ## rm line with only zeros
-  xdata[rr,] <- NA
-  xdata[,rc] <- NA
-           
+  if (filter.low > 0){
+      rc <- colSums(xdata, na.rm=TRUE)
+      ##rc <- which(rc==0)
+      rc <- which(rc < ceiling(quantile(rc[which(rc>0)], probs=filter.low)))
+      rr <- rowSums(xdata, na.rm=TRUE)
+      ##rr <- which(rr==0)
+      rr <- which(rr <  ceiling(quantile(rr[which(rr>0)], probs=filter.low)))
+      
+      ## rm line with only zeros
+      xdata[rr,] <- NA
+      xdata[,rc] <- NA
+  }
   ## create an indicator for all diagonals in the matrix
   rows <- matrix(rep.int(bins, N), nrow=N)
   ##d <- rows - t(rows)
@@ -153,8 +154,10 @@ getExpectedCountsMean <- function(x, logbin=TRUE, step=1.05, filter.low=0.05){
   rownames(expmat) <- rownames(xdata)
 
   ## Put NA at rc and cc
-  expmat[rr,] <- NA
-  expmat[,rc] <- NA
+  if (filter.low > 0){
+      expmat[rr,] <- NA
+      expmat[,rc] <- NA
+  }
   return(list(exp.interaction=expmat, stdev.estimate=NULL))
 }
 

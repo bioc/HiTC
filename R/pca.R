@@ -44,51 +44,51 @@ pca.hic <- function(x, normPerExpected=TRUE, npc=2, asGRangesList=TRUE, gene.gr=
             pscore[idx] <- round(pca$rotation[,i],3)
                        
             if (!is.null(gene.gr)){
-              gd.pos <- sum(gene.density[which(pscore>=0)])
-              gd.neg <- sum(gene.density[which(pscore<0)])
-              message("Gene density per bin - >0 = ", gd.pos)
-              message("Gene density per bin - <0 = ", gd.neg)
-              
-              ## Add Chromosome compartment information
-              if (gd.pos > gd.neg)
-                cc <- ifelse(pscore>0, "A", "B")
-              else{
-                cc <- ifelse(pscore<0, "A", "B")
+                gd.pos <- sum(gene.density[which(pscore>=0)])
+                gd.neg <- sum(gene.density[which(pscore<0)])
+                message("Gene density per bin - >0 = ", gd.pos)
+                message("Gene density per bin - <0 = ", gd.neg)
+                
+                ## Add Chromosome compartment information
+                if (gd.pos > gd.neg)
+                    cc <- ifelse(pscore>0, "A", "B")
+                else{
+                    cc <- ifelse(pscore<0, "A", "B")
                 pscore <- -pscore
-              }
-              pca.res[[eval(paste("PC",i, sep=""))]] <- rbind(pscore, cc, gene.density)
+                }
+                pca.res[[eval(paste("PC",i, sep=""))]] <- rbind(pscore, cc, gene.density)
             }else{
-              pca.res[[eval(paste("PC",i, sep=""))]] <- pscore
+                pca.res[[eval(paste("PC",i, sep=""))]] <- pscore
             }
-          }
-      }else{
+        }
+    }else{
         pca.res <- GRangesList()      
         for (i in 1:npc){
           pscore <- rep(NA, length(xgi))
           pscore[idx] <- round(pca$rotation[,i],3)
-            
+          
           if (!is.null(gene.gr)){
-            gd.pos <- sum(gene.density[which(pscore>=0)])
-            gd.neg <- sum(gene.density[which(pscore<0)])
-            message("Gene density per bin - >0 = ", gd.pos)
-            message("Gene density per bin - <0 = ", gd.neg)
+              gd.pos <- sum(gene.density[which(pscore>=0)])
+              gd.neg <- sum(gene.density[which(pscore<0)])
+              message("Gene density per bin - >0 = ", gd.pos)
+              message("Gene density per bin - <0 = ", gd.neg)
             
             ## Add Chromosome compartment information
-            if (gd.pos > gd.neg)
-              cc <- ifelse(pscore>0, "A", "B")
-            else{
-              pscore <- -pscore
-              cc <- ifelse(pscore>0, "A", "B")
-            }
-            pca.res[[eval(paste("PC",i, sep=""))]] <- GRanges(seqnames(xgi), ranges=ranges(xgi), strand=strand(xgi), score=pscore, genedens=gene.density, ccompartments=cc)
+              if (gd.pos > gd.neg)
+                  cc <- ifelse(pscore>0, "A", "B")
+              else{
+                  pscore <- -pscore
+                  cc <- ifelse(pscore>0, "A", "B")
+              }
+              pca.res[[eval(paste("PC",i, sep=""))]] <- GRanges(seqnames(xgi), ranges=ranges(xgi), strand=strand(xgi), score=pscore, genedens=gene.density, ccompartments=cc)
           }else{
-            pca.res[[eval(paste("PC",i, sep=""))]] <- GRanges(seqnames(xgi), ranges=ranges(xgi), strand=strand(xgi), score=pscore)
+              pca.res[[eval(paste("PC",i, sep=""))]] <- GRanges(seqnames(xgi), ranges=ranges(xgi), strand=strand(xgi), score=pscore)
           }         
-        }
       }
     }
-    return(pca.res)
   }
+    return(pca.res)
+}
 
 ###################################
 ## sparseCor
