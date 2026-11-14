@@ -21,7 +21,7 @@ importFrom("stats", "prcomp", "approx", "density", "glm", "lm", "lowess", "resid
 importFrom("utils", "combn", "object.size", "packageVersion", "read.table", "write.table")
 
 ##importFrom("MASS", "glm.nb")
-importMethodsFrom("Biostrings", "detail")
+importFrom("MultipleAlignment", "detail")
 importMethodsFrom("rtracklayer", "import", "export")
 importMethodsFrom("Matrix", "colMeans", "colSums", "crossprod", "diag", "forceSymmetric", "isTriangular", "rowSums", "nnzero")
 

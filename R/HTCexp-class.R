@@ -262,8 +262,9 @@ setMethod("c", "HTCexp", function(x, ...){
 })
 
 
-setMethod("detail",signature(x="HTCexp"),
-          function(x){
+setMethod("detail",signature(object="HTCexp"),
+          function(object, ...){
+              x <- object
               stopifnot(validObject(x))
               cat("HTC object\n")
               

@@ -87,8 +87,9 @@ setMethod("c", "HTClist", function(x, ...){
 })
 
 
-setMethod("detail",signature(x="HTClist"),
-          function(x){
+setMethod("detail",signature(object="HTClist"),
+          function(object, ...){
+              x <- object
               stopifnot(validObject(x))
               lapply(x, show)
               invisible(NULL)
